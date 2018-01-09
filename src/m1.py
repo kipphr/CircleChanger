@@ -84,7 +84,7 @@ class CircleChanger(object):
             :type fill_color: str
             :type colors: sequence of str
         """
-        self.animation_factor = 1  # Smaller => faster animations
+        self.animation_factor = 0.5  # Smaller => faster animations
         self.seconds_to_sleep = 0.5  # Default for each call to draw
         # --------------------------------------------------------------
         # Change the above "animation_factor" if the animations
@@ -105,7 +105,10 @@ class CircleChanger(object):
 
         self.circle = rg.Circle(rg.Point(x, y), radius)
         self.circle.fill_color = fill_color
+        self.circle.original_fill_color = fill_color
         self.colors = colors
+
+        self.times_changed = 0
 
     def __repr__(self):
         """
@@ -406,11 +409,13 @@ class CircleChanger(object):
             :type index_of_color: int
         """
         ################################################################
-        # TODO: 7.
+        # done: 7.
         #   First, READ the doc-string (specification) above.
         #   Second, READ the   run_test_change_color   function (below).
         #   Third, implement and test this method.
         ################################################################
+
+        self.circle.fill_color = self.colors[index_of_color]
 
     def change_to_original_color(self):
         """
@@ -423,11 +428,13 @@ class CircleChanger(object):
                was constructed.
         """
         ################################################################
-        # TODO: 8.
+        # done: 8.
         #   First, READ the doc-string (specification) above.
         #   Second, READ the   run_test_change_to_original_color   function
         #   (below).  Third, implement and test this method.
         ################################################################
+
+        self.circle.fill_color = self.circle.original_fill_color
 
     def change_to_next_color_in_tuple(self):
         """
@@ -462,11 +469,17 @@ class CircleChanger(object):
         fill color have no effect on or interaction with this method.
         """
         ################################################################
-        # TODO: 9.
+        # done: 9.
         #   First, READ the doc-string (specification) above.
         #   Second, READ the   run_test_change_to_next_color_in_tuple
         #   function (below).  Third, implement and test this method.
         ################################################################
+
+        self.circle.fill_color = self.colors[self.times_changed]
+        self.times_changed = self.times_changed + 1
+
+        if len(self.colors) == self.times_changed:
+            self.times_changed = 0
 
 
 ########################################################################
@@ -858,9 +871,11 @@ def run_test_change_to_next_color_in_tuple():
     for _ in range(16):
         circle_changer1.change_to_next_color_in_tuple()
         circle_changer1.draw(0.25)
+        print('1', circle_changer1.times_changed)
 
         circle_changer2.change_to_next_color_in_tuple()
         circle_changer2.draw(0.25)
+        print('2', circle_changer2.times_changed)
 
     circle_changer2.draw("""
     Should end with circles: BLUE and GREEN.""")
